@@ -1,6 +1,6 @@
 {// Variable Variables
 def_max_hspd = 2;
-def_max_vspd = 5;
+def_max_fall_spd = 5;
 
 def_grav = .2;
 def_fric = .4;
@@ -26,6 +26,12 @@ RESTART_GAME = vk_escape;
 }
 
 {// System Variables
+PLATFORMER_ENABLED = true;
+CLIMBING_ENABLED = true;
+JUMPTHROUGH_ENABLED = true;
+CAP_JUMP = false;
+CAP_FALL = true;
+
 IDLE = 0;
 WALKING = 1;
 JUMPING = 2;
@@ -41,7 +47,7 @@ fireball_count = 0;
 dir = 0;
 
 max_hspd = def_max_hspd;
-max_vspd = def_max_vspd;
+max_fall_spd = def_max_fall_spd;
 
 grav = def_grav;
 fric = def_fric;
@@ -76,8 +82,10 @@ function state_prep(new_state){
 			break;
 			
 		case JUMPING:
-			image_speed = 0;
 			apply_jump();
+		
+		case FALLING:
+			image_speed = 0;
 			break;
 		
 		case CLIMBING:
@@ -85,6 +93,7 @@ function state_prep(new_state){
 			hspd = 0;
 			vspd = 0;
 			break;
+			
 	}
 }
 
@@ -165,26 +174,15 @@ function shoot_fireball(){
 	}
 }
 
-function falling_v_collision(){
-	repeat(abs(vspd)){
-		if !place_meeting(x, y + sign(vspd), obj_climbable) and !place_meeting(x, y + sign(vspd), obj_solid){
-			y += sign(vspd);
-		}else{
-			vspd = 0;
-			break;
-		}
-	}
-}
-
 function state_idle(){
 	get_input();
 	flip_sprite();
-	apply_move();
+	apply_hspd();
 	apply_fric();
 	cap_hspd();
 	h_collision();
 	if hspd != 0 change_state(WALKING);
-	if not on_ground() change_state(FALLING);
+	if not on_ground() and not on_ladder() change_state(FALLING);
 	if v_move == -1 and near_climbable() change_state(CLIMBING);
 	if v_move == 1 and near_climbable() and place_meeting(x, y, obj_climbable) change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();
@@ -194,12 +192,12 @@ function state_idle(){
 function state_walking(){
 	get_input();
 	flip_sprite();
-	apply_move();
+	apply_hspd();
 	apply_fric();
 	cap_hspd();
 	h_collision();
 	if hspd == 0 change_state(IDLE);
-	if not on_ground() change_state(FALLING);
+	if not on_ground() and not on_ladder() change_state(FALLING);
 	if v_move == -1 and near_climbable() and !place_meeting(x, y+1, obj_solid) change_state(CLIMBING);
 	if v_move == 1 and near_climbable() and place_meeting(x, y, obj_climbable) change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();
@@ -209,7 +207,7 @@ function state_walking(){
 function state_jumping(){
 	get_input();
 	flip_sprite();
-	apply_move();
+	apply_hspd();
 	apply_fric();
 	cap_hspd();
 	h_collision();
@@ -224,14 +222,14 @@ function state_jumping(){
 function state_falling(){
 	get_input();
 	flip_sprite();
-	apply_move();
+	apply_hspd();
 	apply_fric();
 	cap_hspd();
 	h_collision();
 	apply_grav();
 	cap_vspd();
 	falling_v_collision();
-	if on_ground() land();
+	if on_ground() or on_ladder() land();
 	flip_sprite();
 	if v_move != 0 and near_climbable() change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();
@@ -241,11 +239,11 @@ function state_climbing(){
 	get_input();
 	image_speed = abs(v_move);
 	flip_sprite();
-	apply_move();
+	apply_hspd();
 	apply_fric();
 	cap_hspd();
 	h_collision();
-	apply_climb();
+	apply_vspd();
 	v_collision();
 	if not place_meeting(x, y, obj_climbable) land();
 	if jump == true change_state(JUMPING);

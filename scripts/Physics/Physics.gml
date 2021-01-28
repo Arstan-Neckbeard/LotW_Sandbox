@@ -25,7 +25,7 @@ function v_collision(){
 function falling_v_collision(){
 	if CLIMBING_ENABLED and JUMPTHROUGH_ENABLED{
 		repeat(abs(vspd)){
-			if !place_meeting(x, y + sign(vspd), obj_climbable) and !place_meeting(x, y + sign(vspd), obj_jumpthrough) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_climbable, true, true) and !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -34,7 +34,7 @@ function falling_v_collision(){
 		}
 	}else if CLIMBING_ENABLED{
 		repeat(abs(vspd)){
-			if !place_meeting(x, y + sign(vspd), obj_climbable) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_climbable, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -43,7 +43,7 @@ function falling_v_collision(){
 		}
 	}else if JUMPTHROUGH_ENABLED{
 		repeat(abs(vspd)){
-			if !place_meeting(x, y + sign(vspd), obj_jumpthrough) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -117,6 +117,21 @@ function on_ladder(){
 		}
 		
 		if !place_meeting(x, y, obj_climbable) and place_meeting(x, y+1, obj_climbable){
+			return true;
+		}
+		
+		return false;
+	}
+}
+
+
+function on_jumpthrough(){
+	if JUMPTHROUGH_ENABLED{
+		if place_meeting(x, y + 1, obj_jumpthrough) and v_move != 0{
+			return true;
+		}
+		
+		if !place_meeting(x, y, obj_jumpthrough) and place_meeting(x, y+1, obj_jumpthrough){
 			return true;
 		}
 		

@@ -195,7 +195,7 @@ function state_idle(){
 	cap_hspd();
 	h_collision();
 	if hspd != 0 change_state(WALKING);
-	if not on_ground() and not on_ladder() change_state(FALLING);
+	if not on_ground() and not on_ladder() and not on_jumpthrough() change_state(FALLING);
 	if v_move == -1 and near_climbable() change_state(CLIMBING);
 	if v_move == 1 and near_climbable() and place_meeting(x, y, obj_climbable) change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();
@@ -210,7 +210,7 @@ function state_walking(){
 	cap_hspd();
 	h_collision();
 	if hspd == 0 change_state(IDLE);
-	if not on_ground() and not on_ladder() change_state(FALLING);
+	if not on_ground() and not on_ladder() and not on_jumpthrough() change_state(FALLING);
 	if v_move == -1 and near_climbable() and !place_meeting(x, y+1, obj_solid) change_state(CLIMBING);
 	if v_move == 1 and near_climbable() and place_meeting(x, y, obj_climbable) change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();
@@ -243,7 +243,7 @@ function state_falling(){
 	apply_grav();
 	cap_vspd();
 	falling_v_collision();
-	if on_ground() or on_ladder() land();
+	if on_ground() or on_ladder() or on_jumpthrough() land();
 	flip_sprite();
 	if v_move != 0 and near_climbable() change_state(CLIMBING);
 	if v_move == 0 and near_climbable() land();

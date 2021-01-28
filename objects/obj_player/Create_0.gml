@@ -7,6 +7,7 @@ def_fric = .4;
 
 def_walk_spd = 1;
 def_jump_height = 5;
+def_jump_dec = 0.75;
 def_climb_spd = 2;
 
 def_fireball_max = 3;
@@ -54,6 +55,7 @@ fric = def_fric;
 
 walk_spd = def_walk_spd;
 jump_height = def_jump_height;
+jump_dec = def_jump_dec;
 climb_spd = def_climb_spd;
 
 fireball_max = def_fireball_max;
@@ -102,7 +104,9 @@ function get_input(){
 	h_move = keyboard_check(RIGHT) - keyboard_check(LEFT);
 	v_move = keyboard_check(UP) - keyboard_check(DOWN);
 	jump = keyboard_check_pressed(JUMP);
+	jumping = keyboard_check(JUMP);
 	fire = keyboard_check_pressed(FIRE);
+	firing = keyboard_check(FIRE);
 	
 	if fire != 0 shoot_fireball();
 	
@@ -217,6 +221,7 @@ function state_jumping(){
 	if on_ground() land();
 	if v_move != 0 and near_climbable() change_state(CLIMBING);
 	if vspd > 0 change_state(FALLING);
+	else if !jumping jump_decrease();
 }
 
 function state_falling(){

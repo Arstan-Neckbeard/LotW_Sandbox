@@ -94,6 +94,11 @@ function cap_vspd(){
 function apply_jump(){
 	vspd = -jump_height;	
 }
+	
+
+function jump_decrease(){
+	vspd *= jump_dec;
+}
 
 
 function on_ground(){

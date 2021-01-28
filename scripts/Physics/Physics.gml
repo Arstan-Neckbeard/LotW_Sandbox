@@ -58,20 +58,20 @@ function falling_v_collision(){
 
 function apply_fric(){
 	if hspd > 0{
-		hspd = max(0, hspd - fric);
+		hspd = max(0, hspd - fric_decel);
 	}else if hspd < 0{
-		hspd = min(0, hspd + fric);
+		hspd = min(0, hspd + fric_decel);
 	}
 }
 
 
 function apply_grav(){
-	vspd += grav;
+	vspd += grav_decel;
 }
 
 
 function apply_hspd(){
-	hspd += h_move * walk_spd;
+	hspd += h_move * walk_accel;
 }
 
 
@@ -82,22 +82,22 @@ function cap_hspd(){
 
 function cap_vspd(){
 	if CAP_JUMP and sign(vspd) == -1{
-		vspd = max(vspd, (max_jump_spd));
+		vspd = max(vspd, (max_vspd));
 	}
 	
 	if CAP_FALL and sign(vspd) == 1{
-		vspd = min(vspd, max_fall_spd);
+		vspd = min(vspd, max_vspd);
 	}
 }
 
 
 function apply_jump(){
-	vspd = -jump_height;	
+	vspd = -jump_accel;	
 }
 	
 
 function jump_decrease(){
-	vspd *= jump_dec;
+	vspd *= jump_decel;
 }
 
 
@@ -129,6 +129,6 @@ function apply_vspd(){
 	if PLATFORMER_ENABLED{
 		vspd = v_move * -climb_spd;
 	}else{
-		vspd = v_move * -walk_spd;
+		vspd = v_move * -walk_accel;
 	}
 }

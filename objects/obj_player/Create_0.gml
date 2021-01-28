@@ -1,14 +1,17 @@
 {// Variable Variables
-def_max_hspd = 2;
-def_max_fall_spd = 5;
+default_max_walk_spd = 2;
+//default_max_run_spd = 4;
+//default_max_jump_spd = 5;
+default_max_fall_spd = 5;
+default_climb_spd = 2;
 
-def_grav = .2;
-def_fric = .4;
+default_walk_accel = 1;
+//default_run_accel = 1;
+default_jump_accel = 5;
 
-def_walk_spd = 1;
-def_jump_height = 5;
-def_jump_dec = 0.75;
-def_climb_spd = 2;
+default_grav_decel = .2;
+default_jump_decel = .75;
+default_fric_decel = .4;
 
 def_fireball_max = 3;
 }
@@ -32,6 +35,7 @@ CLIMBING_ENABLED = true;
 JUMPTHROUGH_ENABLED = true;
 CAP_JUMP = false;
 CAP_FALL = true;
+VARIABLE_JUMP = true;
 
 IDLE = 0;
 WALKING = 1;
@@ -47,21 +51,26 @@ hspd = 0;
 fireball_count = 0;
 dir = 0;
 
-max_hspd = def_max_hspd;
-max_fall_spd = def_max_fall_spd;
+max_walk_spd = default_max_walk_spd;
+//max_run_spd = default_max_run_spd;
+//max_jump_spd = default_max_jump_spd;
+max_fall_spd = default_max_fall_spd;
+climb_spd = default_climb_spd;
 
-grav = def_grav;
-fric = def_fric;
+walk_accel = default_walk_accel;
+//run_accel = default_run_accel;
+jump_accel = default_jump_accel;
 
-walk_spd = def_walk_spd;
-jump_height = def_jump_height;
-jump_dec = def_jump_dec;
-climb_spd = def_climb_spd;
+fric_decel = default_fric_decel;
+grav_decel = default_grav_decel;
+jump_decel = default_jump_decel;
 
 fireball_max = def_fireball_max;
 
 state = IDLE;
 image_speed = 0;
+max_hspd = max_walk_spd;
+max_vspd = max_fall_spd;
 }
 	
 {// Functions
@@ -104,9 +113,9 @@ function get_input(){
 	h_move = keyboard_check(RIGHT) - keyboard_check(LEFT);
 	v_move = keyboard_check(UP) - keyboard_check(DOWN);
 	jump = keyboard_check_pressed(JUMP);
-	jumping = keyboard_check(JUMP);
+	is_jumping = keyboard_check(JUMP);
 	fire = keyboard_check_pressed(FIRE);
-	firing = keyboard_check(FIRE);
+	is_firing = keyboard_check(FIRE);
 	
 	if fire != 0 shoot_fireball();
 	
@@ -221,7 +230,7 @@ function state_jumping(){
 	if on_ground() land();
 	if v_move != 0 and near_climbable() change_state(CLIMBING);
 	if vspd > 0 change_state(FALLING);
-	else if !jumping jump_decrease();
+	else if !is_jumping jump_decrease();
 }
 
 function state_falling(){

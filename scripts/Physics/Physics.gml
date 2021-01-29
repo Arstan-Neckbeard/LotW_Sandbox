@@ -135,6 +135,10 @@ function on_jumpthrough(){
 			return true;
 		}
 		
+		if place_meeting(x, y, obj_jumpthrough) and place_meeting(x, y+1, obj_jumpthrough) and (collision_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom, obj_jumpthrough, true, true) != collision_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom+1, obj_jumpthrough, true, true)){
+			return true;
+		}
+
 		return false;
 	}
 }

@@ -10,7 +10,7 @@ default_walk_accel = 1;
 default_jump_accel = 5;
 
 default_grav_decel = .2;
-default_jump_decel = .75;
+default_jump_decel = .8;
 default_fric_decel = .4;
 
 def_fireball_max = 3;

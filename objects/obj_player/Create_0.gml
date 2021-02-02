@@ -33,7 +33,7 @@ RESTART_GAME = vk_escape;
 {// System Variables
 PLATFORMER_ENABLED = true;
 CLIMBING_ENABLED = true;
-JUMPTHROUGH_ENABLED = true;
+JUMPTHROUGH_ENABLED = false;
 CAP_JUMP = false;
 CAP_FALL = true;
 VARIABLE_JUMP = true;
@@ -195,7 +195,7 @@ function state_idle(){
 	apply_fric();
 	cap_hspd();
 	h_collision();
-	if hspd != 0 change_state(WALKING);
+	if abs(hspd) >= 1 change_state(WALKING);
 	if not on_ground() and not on_ladder() and not on_jumpthrough() change_state(FALLING);
 	if v_move == -1 and near_climbable() change_state(CLIMBING);
 	if v_move == 1 and near_climbable() and place_meeting(x, y, obj_climbable) change_state(CLIMBING);

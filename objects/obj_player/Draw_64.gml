@@ -1,3 +1,4 @@
+/*
 draw_set_font(fnt_tiny);
 draw_set_color(c_white);
 

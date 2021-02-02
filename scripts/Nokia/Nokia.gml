@@ -37,7 +37,7 @@ function nokia_init(){
 	// This is just to initialize stuff (like setting the window scale etc)
 
 	// Create the 'game' controller object
-	instance_create_depth(0, 0, 0, obj_game_nokia);
+	instance_create_layer(0, 0, "Engine", obj_game_nokia);
 
 	var _upscale = 8; // How much bigger should the window be
 	window_set_size(GAMEWIDTH * _upscale, GAMEHEIGHT * _upscale);

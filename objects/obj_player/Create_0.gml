@@ -1,17 +1,18 @@
 {// Variable Variables
-default_max_walk_spd = 2;
+default_max_walk_spd = 1;
 //default_max_run_spd = 4;
 //default_max_jump_spd = 5;
-default_max_fall_spd = 5;
-default_climb_spd = 2;
+default_max_fall_spd = 2;
+default_climb_spd = 1;
 
-default_walk_accel = 1;
+default_walk_accel = .75;
 //default_run_accel = 1;
-default_jump_accel = 5;
+default_jump_accel = 3.2;
 
 default_grav_decel = .2;
-default_jump_decel = .8;
-default_fric_decel = .4;
+default_jump_decel = .1;
+
+default_fric_decel = .3;
 
 def_fireball_max = 3;
 }
@@ -151,9 +152,9 @@ function land(){
 }
 	
 function near_climbable(){
-	if collision_rectangle(bbox_left+8, bbox_top, bbox_right-8, bbox_bottom+1, obj_climbable, true, true){
-		ladder = collision_rectangle(bbox_left+8, bbox_top, bbox_right-8, bbox_bottom+1, obj_climbable, true, true);
-		if abs(ladder.x - x) <= 8 return true;
+	if collision_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom+1, obj_climbable, true, true){
+		ladder = collision_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom+1, obj_climbable, true, true);
+		if abs(ladder.x - x) <= sprite_width return true;
 	}
 	return false;
 }

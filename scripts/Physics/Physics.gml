@@ -21,11 +21,11 @@ function v_collision(){
 	}
 }
 
-
+/*
 function falling_v_collision(){
 	if CLIMBING_ENABLED and JUMPTHROUGH_ENABLED{
 		repeat(abs(vspd)){
-			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_climbable, true, true) and !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-(sprite_width*.375), bbox_bottom+sign(vspd), x+(sprite_width*.375), bbox_bottom+sign(vspd), obj_climbable, true, true) and !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -34,7 +34,7 @@ function falling_v_collision(){
 		}
 	}else if CLIMBING_ENABLED{
 		repeat(abs(vspd)){
-			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_climbable, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-(sprite_width*.375), bbox_bottom+sign(vspd), x+(sprite_width*.375), bbox_bottom+sign(vspd), obj_climbable, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -43,7 +43,7 @@ function falling_v_collision(){
 		}
 	}else if JUMPTHROUGH_ENABLED{
 		repeat(abs(vspd)){
-			if !collision_line(x-6, bbox_bottom+sign(vspd), x+6, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+			if !collision_line(x-(sprite_width*.375), bbox_bottom+sign(vspd), x+(sprite_width*.375), bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
 				y += sign(vspd);
 			}else{
 				vspd = 0;
@@ -54,7 +54,40 @@ function falling_v_collision(){
 		v_collision();
 	}
 }
+*/
 
+function falling_v_collision(){
+	if CLIMBING_ENABLED and JUMPTHROUGH_ENABLED{
+		repeat(abs(vspd)){
+			if !collision_line(bbox_left, bbox_bottom+sign(vspd), bbox_right, bbox_bottom+sign(vspd), obj_climbable, true, true) and !collision_line(bbox_left, bbox_bottom+sign(vspd), bbox_right, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+				y += sign(vspd);
+			}else{
+				vspd = 0;
+				break;
+			}
+		}
+	}else if CLIMBING_ENABLED{
+		repeat(abs(vspd)){
+			if !collision_line(bbox_left, bbox_bottom+sign(vspd), bbox_right, bbox_bottom+sign(vspd), obj_climbable, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+				y += sign(vspd);
+			}else{
+				vspd = 0;
+				break;
+			}
+		}
+	}else if JUMPTHROUGH_ENABLED{
+		repeat(abs(vspd)){
+			if !collision_line(bbox_left, bbox_bottom+sign(vspd), bbox_right, bbox_bottom+sign(vspd), obj_jumpthrough, true, true) and !place_meeting(x, y + sign(vspd), obj_solid){
+				y += sign(vspd);
+			}else{
+				vspd = 0;
+				break;
+			}
+		}
+	}else{
+		v_collision();
+	}
+}
 
 function apply_fric(){
 	if hspd > 0{
@@ -143,9 +176,20 @@ function on_jumpthrough(){
 	}
 }
 
-
+/*
 function apply_vspd(){
 	if PLATFORMER_ENABLED{
+		vspd = v_move * -climb_spd;
+	}else{
+		vspd = v_move * -walk_accel;
+	}
+}
+*/
+
+function apply_vspd(){
+	if PLATFORMER_ENABLED and place_meeting(x, y, obj_climbable) and v_move = 1{
+		vspd = v_move * -climb_spd;
+	}else if PLATFORMER_ENABLED and place_meeting(x, y+1, obj_climbable) and v_move = -1{
 		vspd = v_move * -climb_spd;
 	}else{
 		vspd = v_move * -walk_accel;
